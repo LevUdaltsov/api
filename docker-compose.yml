@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  redis:
+    image: redis
+    networks:
+    - sampler_network
+
+  sampler:
+    image: random_sampler
+    build: ./random_sampler
+    depends_on:
+    - redis
+    networks:
+    - sampler_network
+    env_file:
+    - .env
+    ports:
+    - "80:80"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+    sampler_network:
